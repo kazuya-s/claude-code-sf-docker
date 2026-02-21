@@ -1,0 +1,3 @@
+# Ignore the Dockerfile itself (not needed in the image layer)
+Dockerfile
+.dockerignore

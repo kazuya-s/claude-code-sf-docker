@@ -1,0 +1,19 @@
+services:
+  claude:
+    build:
+      context: ./docker
+      dockerfile: Dockerfile
+      args:
+        USER_UID: ${UID}
+        USER_GID: ${GID}
+    volumes:
+      - ./app:/workspace
+      - claude-config:/home/claude/.config/claude
+    working_dir: /workspace
+    stdin_open: true
+    tty: true
+    security_opt:
+      - no-new-privileges:true
+
+volumes:
+  claude-config:

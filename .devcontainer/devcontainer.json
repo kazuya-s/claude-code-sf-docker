@@ -1,0 +1,17 @@
+{
+  "name": "claude-dev",
+  "dockerComposeFile": "../docker-compose.yml",
+  "service": "claude",
+  "workspaceFolder": "/workspace",
+  "remoteUser": "claude",
+  "updateRemoteUserUID": true,
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "EditorConfig.EditorConfig",
+        "ms-azuretools.vscode-docker",
+        "mhutchie.git-graph"
+      ]
+    }
+  }
+}
