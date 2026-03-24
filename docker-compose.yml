@@ -7,13 +7,11 @@ services:
         USER_UID: ${UID}
         USER_GID: ${GID}
     volumes:
-      - ./app:/workspace
-      - claude-config:/home/claude/.config/claude
+      - ./volumes/workspace:/workspace
+      - ./volumes/home/claude/.zshrc:/home/claude/.zshrc
+      - ./volumes/home/claude/.config/claude:/home/claude/.config/claude
     working_dir: /workspace
     stdin_open: true
     tty: true
     security_opt:
       - no-new-privileges:true
-
-volumes:
-  claude-config:

@@ -9,10 +9,10 @@ Claude Code を Docker 上で実行するための開発環境です。
 - コンテナ完結型
 - Claude Pro（Web版）のログイン方式を使用
 - APIキー不要
-- 認証情報は Docker named volume に保存
+- 認証情報はホスト側の `volumes/` ディレクトリに bind mount で保存
 - ホスト環境を汚さない
 - build context は `./docker` に限定
-- 実行対象は `./app` のみマウント
+- 作業ディレクトリは `./volumes/workspace` にマウント
 
 ---
 
@@ -20,10 +20,15 @@ Claude Code を Docker 上で実行するための開発環境です。
 
 ```
 project-root/
-├─ app/                  # 作業対象のコード（コンテナ内 /workspace にマウント）
+├─ volumes/              # コンテナへの bind mount ディレクトリ
+│   ├─ workspace/        # 作業対象のコード（コンテナ内 /workspace にマウント）
+│   └─ home/
+│       └─ claude/
+│           ├─ .zshrc    # zsh 設定ファイル
+│           └─ .config/
+│               └─ claude/  # Claude 認証情報（gitignore済み）
 ├─ docker/               # Docker関連定義
 │   ├─ Dockerfile
-│   ├─ zshrc
 │   └─ .dockerignore
 ├─ docker-compose.yml
 ├─ .env                  # ホストの UID/GID を記載（要作成・gitignore済み）
@@ -98,15 +103,15 @@ claude auth status
 
 ## 認証情報の保存場所
 
-認証情報は Docker named volume:
+認証情報はホスト側の bind mount ディレクトリ:
 
 ```
-claude-config
+./volumes/home/claude/.config/claude/
 ```
 
 に保存されます。
 
-コンテナを削除しても volume がある限りログインは保持されます。
+コンテナを削除してもディレクトリが残る限りログインは保持されます。
 
 ---
 
@@ -121,7 +126,7 @@ docker compose down
 ## 認証情報も削除する場合
 
 ```bash
-docker compose down -v
+rm -rf ./volumes/home/claude/.config/claude
 ```
 
 ⚠ これを実行すると再ログインが必要になります。
