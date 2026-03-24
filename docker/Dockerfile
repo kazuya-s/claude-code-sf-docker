@@ -35,11 +35,10 @@ WORKDIR /home/${USERNAME}
 
 # ---- Claude Code (always latest at build time) ----
 RUN curl -fsSL https://claude.ai/install.sh | bash
-
 ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
+RUN mkdir -p /home/claude/.config/claude && \
+    chown -R claude:claude /home/claude/.config
 
 # ---- zsh config ----
-COPY zshrc /home/${USERNAME}/.zshrc
-
 WORKDIR /workspace
 CMD ["zsh"]
