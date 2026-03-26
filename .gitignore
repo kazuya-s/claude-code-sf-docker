@@ -20,8 +20,10 @@ docker-compose.override.yml
 # Claude
 # =========================
 claude-config/
+volumes/home/claude/.claude.json
 volumes/home/claude/.config/claude/
 volumes/home/claude/.claude/
+volumes/home/claude/.local/
 
 # =========================
 # Salesforce (auth tokens / credentials)
