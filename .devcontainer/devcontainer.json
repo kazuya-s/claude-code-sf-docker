@@ -1,7 +1,7 @@
 {
-  "name": "claude-dev",
+  "name": "claude-sf-dev",
   "dockerComposeFile": "../docker-compose.yml",
-  "service": "claude",
+  "service": "claude-sf",
   "workspaceFolder": "/workspace",
   "remoteUser": "claude",
   "updateRemoteUserUID": true,
@@ -10,7 +10,8 @@
       "extensions": [
         "EditorConfig.EditorConfig",
         "ms-azuretools.vscode-docker",
-        "mhutchie.git-graph"
+        "mhutchie.git-graph",
+        "salesforce.salesforcedx-vscode"
       ]
     }
   }

@@ -20,6 +20,15 @@ docker-compose.override.yml
 # Claude
 # =========================
 claude-config/
+volumes/home/claude/.config/claude/
+volumes/home/claude/.claude/
+
+# =========================
+# Salesforce (auth tokens / credentials)
+# =========================
+volumes/home/claude/.sf/
+volumes/home/claude/.sfdx/
+volumes/workspace/auth.txt
 
 # =========================
 # Logs

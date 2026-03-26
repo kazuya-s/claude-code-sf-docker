@@ -25,8 +25,11 @@ project-root/
 │   └─ home/
 │       └─ claude/
 │           ├─ .zshrc    # zsh 設定ファイル
-│           └─ .config/
-│               └─ claude/  # Claude 認証情報（gitignore済み）
+│           ├─ .claude/     # Claude 設定・履歴（gitignore済み）
+│           ├─ .config/
+│           │   └─ claude/  # Claude 認証情報（gitignore済み）
+│           ├─ .sf/         # Salesforce CLI 設定（gitignore済み）
+│           └─ .sfdx/       # Salesforce 認証情報（gitignore済み）
 ├─ docker/               # Docker関連定義
 │   ├─ Dockerfile
 │   └─ .dockerignore
@@ -62,7 +65,7 @@ docker compose up -d --build
 ### 3. コンテナに入る
 
 ```bash
-docker compose exec claude zsh
+docker compose exec claude-sf zsh
 ```
 
 ---
@@ -76,7 +79,7 @@ Claude Pro の Webログイン方式を利用します。
 ### 1️⃣ コンテナに入る
 
 ```bash
-docker compose exec claude zsh
+docker compose exec claude-sf zsh
 ```
 
 ### 2️⃣ Claude にログイン
@@ -112,6 +115,53 @@ claude auth status
 に保存されます。
 
 コンテナを削除してもディレクトリが残る限りログインは保持されます。
+
+---
+
+## Salesforce 組織へのログイン
+
+Docker 内では `sf org login web` のコールバックが機能しないため、ホストで取得した認証情報を Docker 内にインポートします。
+
+### 1. ホストで Salesforce にログイン
+
+ホストマシンのターミナルで実行します:
+
+```bash
+sf org login web -a <エイリアス>
+```
+
+### 2. Sfdx Auth URL を取得する
+
+```bash
+sf org display --target-org <エイリアス> --verbose
+```
+
+出力結果の中に `Sfdx Auth Url` という項目があります。`force://` で始まる長い文字列をコピーします。
+
+### 3. auth.txt を作成して Docker 内に配置する
+
+ホストの `volumes/workspace/` ディレクトリに `auth.txt` を作成します:
+
+```bash
+echo "force://..." > volumes/workspace/auth.txt
+```
+
+> ⚠ `auth.txt` には認証情報が含まれます。`.gitignore` に追加してください。
+
+### 4. Docker 内で認証情報をインポートする
+
+コンテナに入り、以下を実行します:
+
+```bash
+docker compose exec claude-sf zsh
+sf org login sfdx-url -f auth.txt -d -a <エイリアス>
+```
+
+インポート後は `auth.txt` を削除することを推奨します:
+
+```bash
+rm auth.txt
+```
 
 ---
 

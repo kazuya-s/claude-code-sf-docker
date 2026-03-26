@@ -35,7 +35,20 @@ WORKDIR /home/${USERNAME}
 
 # ---- Claude Code (always latest at build time) ----
 RUN curl -fsSL https://claude.ai/install.sh | bash
-ENV PATH="/home/${USERNAME}/.local/bin:${PATH}"
+
+# ---- mise (version manager) ----
+RUN curl https://mise.run | sh
+ENV PATH="/home/${USERNAME}/.local/share/mise/shims:/home/${USERNAME}/.local/bin:${PATH}"
+
+# ---- Node.js via mise ----
+RUN mise use -g node@lts
+
+# ---- Salesforce CLI ----
+RUN npm install -g @salesforce/cli
+
+# ---- JDK via mise ----
+RUN mise use -g java@temurin-21
+
 RUN mkdir -p /home/claude/.config/claude && \
     chown -R claude:claude /home/claude/.config
 
