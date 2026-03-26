@@ -12,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     vim \
     locales \
     sudo \
+    jq \
     && rm -rf /var/lib/apt/lists/*
 
 # ---- locale (UTF-8) ----
@@ -33,9 +34,6 @@ RUN groupadd --gid ${USER_GID} --non-unique ${USERNAME} \
 USER ${USERNAME}
 WORKDIR /home/${USERNAME}
 
-# ---- Claude Code (always latest at build time) ----
-RUN curl -fsSL https://claude.ai/install.sh | bash
-
 # ---- mise (version manager) ----
 RUN curl https://mise.run | sh
 ENV PATH="/home/${USERNAME}/.local/share/mise/shims:/home/${USERNAME}/.local/bin:${PATH}"
@@ -49,9 +47,14 @@ RUN npm install -g @salesforce/cli
 # ---- JDK via mise ----
 RUN mise use -g java@temurin-21
 
-RUN mkdir -p /home/claude/.config/claude && \
-    chown -R claude:claude /home/claude/.config
+RUN mkdir -p /home/${USERNAME}/.config/claude && \
+    chown -R ${USERNAME}:${USERNAME} /home/${USERNAME}/.config
+
+# ---- entrypoint: installs Claude Code on first start (persisted via volume) ----
+COPY --chown=${USERNAME}:${USERNAME} entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
 # ---- zsh config ----
 WORKDIR /workspace
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 CMD ["zsh"]

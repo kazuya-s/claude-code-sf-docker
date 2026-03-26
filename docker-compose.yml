@@ -9,8 +9,10 @@ services:
     volumes:
       - ./volumes/workspace:/workspace
       - ./volumes/home/claude/.zshrc:/home/claude/.zshrc
+      - ./volumes/home/claude/.claude.json:/home/claude/.claude.json
       - ./volumes/home/claude/.config/claude:/home/claude/.config/claude
       - ./volumes/home/claude/.claude:/home/claude/.claude
+      - ./volumes/home/claude/.local/share/claude:/home/claude/.local/share/claude
       - ./volumes/home/claude/.sf:/home/claude/.sf
       - ./volumes/home/claude/.sfdx:/home/claude/.sfdx
     working_dir: /workspace
